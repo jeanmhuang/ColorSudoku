@@ -13,6 +13,7 @@
   <meta property="og:image" content="https://raw.githubusercontent.com/jeanmhuang/ColorSudoku/main/thumbnail.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/jeanmhuang/ColorSudoku/main/thumbnail.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#fff9fc; --card:#ffffff; --ink:#2f2f2f; --muted:#8c8c8c;
@@ -20,32 +21,34 @@
       --C1:#ffb7d5; --C2:#ffd1a6; --C3:#fff477; --C4:#b8f7b8; --C5:#aee0ff; --C6:#d6b8ff;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;display:flex;align-items:flex-start;justify-content:center;padding:24px}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:'Playfair Display',serif;display:flex;align-items:flex-start;justify-content:center;padding:24px;font-size:17px;line-height:1.5}
     .wrap{width:min(900px,100%);background:var(--card);border:2px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(180,120,150,.18);padding:16px;margin-top:20px}
-    h1{text-align:center;color:var(--accent)}
+    h1{text-align:center;color:var(--accent);font-family:'DM Serif Display',serif;font-size:2.3em;letter-spacing:0.4px;margin-bottom:0.2em}
+    h2.subtitle{text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-style:italic;font-size:1em;margin-top:0;margin-bottom:1em}
+    h3{font-family:'Playfair Display',serif;color:var(--accent);font-weight:600;margin-bottom:0.5em;text-align:center}
     .grid{display:grid;grid-template-columns:repeat(6,1fr);border:2px solid var(--border);border-radius:12px;overflow:hidden;margin-top:10px}
-    .cell{aspect-ratio:1/1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .15s ease}
+    .cell{aspect-ratio:1/1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .15s ease;font-family:'Playfair Display',serif;font-size:15px}
     .cell.fixed{cursor:default}
     .cell.err{box-shadow:0 0 0 3px var(--invalid) inset}
-    .k{font:600 12px/1 ui-sans-serif,system-ui;opacity:.7;color:#333}
+    .k{font:600 12px/1 'Playfair Display',serif;opacity:.7;color:#333}
     .cell[data-r="1"], .cell[data-r="3"], .cell[data-r="5"]{border-top-width:2px}
     .cell[data-c="1"], .cell[data-c="3"], .cell[data-c="5"]{border-left-width:2px}
-    aside{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;margin-top:12px}
+    aside{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;margin-top:12px;font-family:'Playfair Display',serif}
     .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px 10px;border-radius:10px;cursor:pointer}
+    .swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px 10px;border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;font-size:15px}
     .chip{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
     .active{box-shadow:0 0 0 3px var(--ring) inset}
-    .controls{display:flex;gap:8px;margin-top:10px;justify-content:center}
-    button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer}
+    .controls{display:flex;gap:8px;margin-top:10px;justify-content:center;font-family:'Playfair Display',serif}
+    button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer;font-family:'Playfair Display',serif;letter-spacing:0.3px}
     button:hover{box-shadow:0 8px 20px rgba(180,120,150,.18)}
-    .visitor{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
+    .visitor{margin-top:14px;text-align:center;font-size:15px;color:var(--muted);font-family:'Playfair Display',serif}
     .visitor strong{color:var(--ink)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Coquette Color Sudoku (6×6)</h1>
-    <p style="text-align:center;color:var(--muted)">Click a color then fill each cell — no keyboard needed.</p>
+    <h2 class="subtitle">Click a color then fill each cell — no keyboard needed.</h2>
     <div id="grid" class="grid"></div>
     <aside>
       <h3>Palette</h3>
@@ -56,7 +59,7 @@
         <button id="btnHint">💡 Hint</button>
         <button id="btnSolve">✨ Solve</button>
       </div>
-      <p style="font-size:13px;color:var(--muted);margin-top:8px">R=Rose, O=Peach, Y=Lemon, G=Mint, B=Sky, P=Lilac.</p>
+      <p style="font-size:15px;color:var(--muted);margin-top:8px;font-family:'Playfair Display',serif">R=Rose, O=Peach, Y=Lemon, G=Mint, B=Sky, P=Lilac.</p>
     </aside>
     <div class="visitor">Visitor Counter: <img src="https://visitor-badge.laobi.icu/badge?page_id=jeanmhuang.ColorSudoku" alt="Visitors" /></div>
   </div>
