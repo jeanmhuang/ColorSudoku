@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Coquette Color Sudoku — 6×6</title>
   <meta name="description" content="One soothing 6×6 Color Sudoku by Airy Fairy Press. Fill each row, column, and 2×3 block with each color once.">
+  <!-- Favicon & Social Preview -->
+  <link rel="icon" href="https://raw.githubusercontent.com/jeanmhuang/ColorSudoku/main/thumbnail.jpg">
+  <meta property="og:title" content="Coquette Color Sudoku — 6×6">
+  <meta property="og:description" content="Play a pastel 6×6 Color Sudoku right in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://raw.githubusercontent.com/jeanmhuang/ColorSudoku/main/thumbnail.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/jeanmhuang/ColorSudoku/main/thumbnail.jpg">
   <style>
     :root{
       --bg:#fff9fc; --card:#ffffff; --ink:#2f2f2f; --muted:#8c8c8c;
@@ -30,6 +38,8 @@
     .controls{display:flex;gap:8px;margin-top:10px;justify-content:center}
     button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer}
     button:hover{box-shadow:0 8px 20px rgba(180,120,150,.18)}
+    .visitor{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
+    .visitor strong{color:var(--ink)}
   </style>
 </head>
 <body>
@@ -48,6 +58,7 @@
       </div>
       <p style="font-size:13px;color:var(--muted);margin-top:8px">R=Rose, O=Peach, Y=Lemon, G=Mint, B=Sky, P=Lilac.</p>
     </aside>
+    <div class="visitor">Visitor Counter: <img src="https://visitor-badge.laobi.icu/badge?page_id=jeanmhuang.ColorSudoku" alt="Visitors" /></div>
   </div>
 
   <script>
@@ -70,3 +81,4 @@
   </script>
 </body>
 </html>
+
