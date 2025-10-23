@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coquette Color Sudoku — 6×6</title>
+  <meta name="description" content="One soothing 6×6 Color Sudoku by Airy Fairy Press. Fill each row, column, and 2×3 block with each color once.">
+  <style>
+    :root{
+      --bg:#fff9fc; --card:#ffffff; --ink:#2f2f2f; --muted:#8c8c8c;
+      --border:#f1d9e5; --accent:#d97fa4; --ring:#ff8fb3; --invalid:#ff6b6b; --valid:#3fc07a;
+      --C1:#ffb7d5; --C2:#ffd1a6; --C3:#fff477; --C4:#b8f7b8; --C5:#aee0ff; --C6:#d6b8ff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;display:flex;align-items:flex-start;justify-content:center;padding:24px}
+    .wrap{width:min(900px,100%);background:var(--card);border:2px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(180,120,150,.18);padding:16px;margin-top:20px}
+    h1{text-align:center;color:var(--accent)}
+    .grid{display:grid;grid-template-columns:repeat(6,1fr);border:2px solid var(--border);border-radius:12px;overflow:hidden;margin-top:10px}
+    .cell{aspect-ratio:1/1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .15s ease}
+    .cell.fixed{cursor:default}
+    .cell.err{box-shadow:0 0 0 3px var(--invalid) inset}
+    .k{font:600 12px/1 ui-sans-serif,system-ui;opacity:.7;color:#333}
+    .cell[data-r="1"], .cell[data-r="3"], .cell[data-r="5"]{border-top-width:2px}
+    .cell[data-c="1"], .cell[data-c="3"], .cell[data-c="5"]{border-left-width:2px}
+    aside{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;margin-top:12px}
+    .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px 10px;border-radius:10px;cursor:pointer}
+    .chip{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
+    .active{box-shadow:0 0 0 3px var(--ring) inset}
+    .controls{display:flex;gap:8px;margin-top:10px;justify-content:center}
+    button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer}
+    button:hover{box-shadow:0 8px 20px rgba(180,120,150,.18)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Coquette Color Sudoku (6×6)</h1>
+    <p style="text-align:center;color:var(--muted)">Click a color then fill each cell — no keyboard needed.</p>
+    <div id="grid" class="grid"></div>
+    <aside>
+      <h3>Palette</h3>
+      <div id="legend" class="legend"></div>
+      <div class="controls">
+        <button id="btnClear">↺ Reset</button>
+        <button id="btnCheck">✔︎ Check</button>
+        <button id="btnHint">💡 Hint</button>
+        <button id="btnSolve">✨ Solve</button>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:8px">R=Rose, O=Peach, Y=Lemon, G=Mint, B=Sky, P=Lilac.</p>
+    </aside>
+  </div>
+
+  <script>
+    const COLORS=[null,{key:'R',name:'Rose',css:'var(--C1)'},{key:'O',name:'Peach',css:'var(--C2)'},{key:'Y',name:'Lemon',css:'var(--C3)'},{key:'G',name:'Mint',css:'var(--C4)'},{key:'B',name:'Sky',css:'var(--C5)'},{key:'P',name:'Lilac',css:'var(--C6)'}];
+    const PUZZLE={grid:[[0,2,0,0,5,0],[0,0,5,0,0,2],[3,0,0,0,0,0],[0,0,0,0,0,5],[5,0,0,4,0,0],[0,4,0,0,2,0]],sol:[[1,2,3,6,5,4],[4,6,5,3,1,2],[3,5,2,1,4,6],[2,1,4,5,6,3],[5,3,6,4,2,1],[6,4,1,2,3,5]]};
+    const gridEl=document.getElementById('grid');const legendEl=document.getElementById('legend');let current,fixed,activeColor=1;
+    function clone(m){return m.map(r=>r.slice());}
+    function load(){current=clone(PUZZLE.grid);fixed=PUZZLE.grid.map(r=>r.map(v=>v!==0));renderBoard();renderLegend();}
+    function renderBoard(){gridEl.innerHTML='';for(let r=0;r<6;r++){for(let c=0;c<6;c++){const v=current[r][c];const d=document.createElement('div');d.className='cell'+(fixed[r][c]?' fixed':'');d.dataset.r=r+1;d.dataset.c=c+1;d.style.background=v?COLORS[v].css:'#fff';if(v){const k=document.createElement('div');k.className='k';k.textContent=COLORS[v].key;d.appendChild(k);}d.addEventListener('click',()=>handleCell(r,c));gridEl.appendChild(d);}}highlightErrors();}
+    function renderLegend(){legendEl.innerHTML='';for(let i=1;i<=6;i++){const sw=document.createElement('div');sw.className='swatch'+(activeColor===i?' active':'');sw.addEventListener('click',()=>{activeColor=i;renderLegend();});const chip=document.createElement('div');chip.className='chip';chip.style.background=COLORS[i].css;const txt=document.createElement('div');txt.innerHTML=`<strong>${COLORS[i].key}</strong> ${COLORS[i].name}`;sw.appendChild(chip);sw.appendChild(txt);legendEl.appendChild(sw);}}
+    function handleCell(r,c){if(fixed[r][c])return;const cur=current[r][c];current[r][c]=(cur===activeColor)?0:activeColor;renderBoard();}
+    function uniqueOK(arr){const s=new Set();for(const v of arr){if(v===0)continue;if(s.has(v))return false;s.add(v);}return true;}
+    function highlightErrors(){const cells=[...gridEl.children];cells.forEach(c=>c.classList.remove('err'));let bad=false;for(let i=0;i<6;i++){const row=current[i];const col=current.map(r=>r[i]);if(!uniqueOK(row)){bad=true;for(let c=0;c<6;c++)cells[i*6+c].classList.add('err');}if(!uniqueOK(col)){bad=true;for(let r=0;r<6;r++)cells[r*6+i].classList.add('err');}}for(let br=0;br<3;br++){for(let bc=0;bc<2;bc++){const items=[];for(let r=br*2;r<br*2+2;r++)for(let c=bc*3;c<bc*3+3;c++)items.push({r,c,v:current[r][c]});if(!uniqueOK(items.map(x=>x.v))){bad=true;items.forEach(({r,c})=>cells[r*6+c].classList.add('err'));}}}return !bad;}
+    function check(){highlightErrors();}
+    function hint(){const open=[];for(let r=0;r<6;r++)for(let c=0;c<6;c++)if(!fixed[r][c]&&current[r][c]!==PUZZLE.sol[r][c])open.push([r,c]);if(!open.length)return;const [r,c]=open[Math.floor(Math.random()*open.length)];current[r][c]=PUZZLE.sol[r][c];renderBoard();}
+    function solve(){current=clone(PUZZLE.sol);renderBoard();}
+    function clearBoard(){current=clone(PUZZLE.grid);renderBoard();}
+    document.getElementById('btnClear').addEventListener('click',clearBoard);document.getElementById('btnCheck').addEventListener('click',check);document.getElementById('btnHint').addEventListener('click',hint);document.getElementById('btnSolve').addEventListener('click',solve);
+    load();
+  </script>
+</body>
+</html>
