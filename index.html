@@ -23,6 +23,7 @@
     .swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px;border-radius:8px;cursor:pointer}
     .chip{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
     .active{box-shadow:0 0 0 3px var(--ring) inset}
+  .visitor{margin-top:14px;text-align:center;font-size:15px;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -32,10 +33,12 @@
     <div class="legend" id="legend"></div>
     <div class="controls">
       <button id="btnNew">🧩 New</button>
+      <button id="btnReset">↺ Reset</button>
       <button id="btnCheck">✔︎ Check</button>
       <button id="btnHint">💡 Hint</button>
       <button id="btnSolve">✨ Solve</button>
     </div>
+    <div class="visitor">Visitor Counter: <img src="https://visitor-badge.laobi.icu/badge?page_id=jeanmhuang.ColorSudoku" alt="Visitors" /></div>
   </div>
 
   <script>
@@ -47,7 +50,37 @@
 
     function shuffle(a){return a.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);}
     function baseSolved(){const N=6,rBase=2,cBase=3;return Array.from({length:N},(_,r)=>Array.from({length:N},(_,c)=>((r*cBase+Math.floor(r/rBase)+c)%N)+1));}
-    function randomSolved(){let g=baseSolved();const perm=r=>shuffle(r);g=shuffle(g);g=g.map(r=>perm(r));return g;}
+    function randomSolved(){
+      // Start from canonical valid base
+      let g = baseSolved();
+      const N=6, rBase=2, cBase=3;
+      // Shuffle row bands (0..2), and rows within each band
+      const bandOrder = shuffle([0,1,2]);
+      const rowsShuffled = [];
+      for(const b of bandOrder){
+        const rowsInBand = [b*rBase, b*rBase+1];
+        const perm = shuffle(rowsInBand);
+        for(const r of perm) rowsShuffled.push(g[r]);
+      }
+      g = rowsShuffled;
+      // Shuffle column stacks (0..1), and columns within each stack
+      const stackOrder = shuffle([0,1]);
+      const g2 = Array.from({length:N},()=>Array(N).fill(0));
+      let destCol = 0;
+      for(const s of stackOrder){
+        const colsInStack = [s*cBase, s*cBase+1, s*cBase+2];
+        const perm = shuffle(colsInStack);
+        for(const sc of perm){
+          for(let r=0;r<N;r++) g2[r][destCol] = g[r][sc];
+          destCol++;
+        }
+      }
+      g = g2;
+      // Relabel digits 1..6 randomly
+      const map = shuffle([1,2,3,4,5,6]);
+      g = g.map(row=>row.map(v=>map[v-1]));
+      return g;
+    }
     function makeMask(n){const N=6,m=Array.from({length:N},()=>Array(N).fill(false));const cells=shuffle(Array.from({length:N*N},(_,i)=>[Math.floor(i/N),i%N]));for(let i=0;i<n;i++){const[r,c]=cells[i];m[r][c]=true;}return m;}
 
     function generatePuzzle(){solution=randomSolved();const mask=makeMask(18+Math.floor(Math.random()*3));startGrid=solution.map((r,ri)=>r.map((v,ci)=>mask[ri][ci]?v:0));current=startGrid.map(r=>r.slice());fixed=startGrid.map(r=>r.map(v=>v!==0));renderBoard();renderLegend();}
@@ -56,18 +89,77 @@
 
     function renderLegend(){legendEl.innerHTML='';for(let i=1;i<=6;i++){const sw=document.createElement('div');sw.className='swatch'+(activeColor===i?' active':'');const chip=document.createElement('div');chip.className='chip';chip.style.background=COLORS[i].css;const label=document.createElement('span');label.textContent=COLORS[i].name;sw.appendChild(chip);sw.appendChild(label);sw.addEventListener('click',()=>{activeColor=i;renderLegend();});legendEl.appendChild(sw);}}
 
-    function highlightErrors(){const cells=[...gridEl.children];cells.forEach(c=>c.classList.remove('err'));for(let r=0;r<6;r++){for(let c=0;c<6;c++){const v=current[r][c];if(v===0)continue;for(let k=0;k<6;k++){if(k!==c&&current[r][k]===v){cells[r*6+c].classList.add('err');cells[r*6+k].classList.add('err');}if(k!==r&&current[k][c]===v){cells[r*6+c].classList.add('err');cells[k*6+c].classList.add('err');}}}}}
+    function highlightErrors(){
+      const cells=[...gridEl.children];
+      cells.forEach(c=>c.classList.remove('err'));
+      // Row & Column duplicates
+      for(let i=0;i<6;i++){
+        const row=current[i];
+        const col=current.map(r=>r[i]);
+        const markRow=new Set(), markCol=new Set();
+        for(let a=0;a<6;a++){
+          for(let b=a+1;b<6;b++){
+            if(row[a]!==0 && row[a]===row[b]){ markRow.add(a); markRow.add(b); }
+            if(col[a]!==0 && col[a]===col[b]){ markCol.add(a); markCol.add(b); }
+          }
+        }
+        for(const c of markRow) cells[i*6+c].classList.add('err');
+        for(const r of markCol) cells[r*6+i].classList.add('err');
+      }
+      // 2x3 block duplicates
+      for(let br=0;br<3;br++){
+        for(let bc=0;bc<2;bc++){
+          const idxs=[]; const vals=[];
+          for(let r=br*2;r<br*2+2;r++){
+            for(let c=bc*3;c<bc*3+3;c++){
+              idxs.push([r,c]); vals.push(current[r][c]);
+            }
+          }
+          for(let a=0;a<vals.length;a++){
+            for(let b=a+1;b<vals.length;b++){
+              if(vals[a]!==0 && vals[a]===vals[b]){
+                const [r1,c1]=idxs[a], [r2,c2]=idxs[b];
+                cells[r1*6+c1].classList.add('err');
+                cells[r2*6+c2].classList.add('err');
+              }
+            }
+          }
+        }
+      }
+    }
 
-    function check(){highlightErrors();}
+    function check(){ highlightErrors(); }
+
+    function hint(){
+      if(!solution || !current || !fixed) return;
+      // collect cells that are either empty or incorrect and not fixed
+      const open=[];
+      for(let r=0;r<6;r++){
+        for(let c=0;c<6;c++){
+          if(!fixed[r][c] && current[r][c]!==solution[r][c]) open.push([r,c]);
+        }
+      }
+      if(open.length===0) return; // nothing to hint
+      const [r,c]=open[Math.floor(Math.random()*open.length)];
+      current[r][c]=solution[r][c];
+      renderBoard();
+      // briefly highlight the hinted cell
+      const cells=[...gridEl.children];
+      const idx=r*6+c; const cell=cells[idx];
+      cell.style.boxShadow='0 0 0 3px var(--ring) inset';
+      setTimeout(()=>{ cell.style.boxShadow=''; }, 600);
+    }
 
     document.getElementById('btnNew').addEventListener('click',generatePuzzle);
     document.getElementById('btnCheck').addEventListener('click',check);
-    document.getElementById('btnHint').addEventListener('click',()=>{alert('Hint feature coming soon!')});
+    document.getElementById('btnHint').addEventListener('click', hint);
     document.getElementById('btnSolve').addEventListener('click',()=>{current=solution.map(r=>r.slice());renderBoard();});
+    document.getElementById('btnReset').addEventListener('click',()=>{ current = startGrid.map(r=>r.slice()); renderBoard(); });
 
     generatePuzzle();
   </script>
 </body>
 </html>
+
 
 
