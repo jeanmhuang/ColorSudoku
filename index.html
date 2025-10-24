@@ -4,48 +4,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Coquette Color Sudoku — 6×6</title>
-  <meta name="description" content="One soothing 6×6 Color Sudoku by Airy Fairy Press. Fill each row, column, and 2×3 block with each color once.">
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
-  <link rel="icon" type="image/png" sizes="16x16" href="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
-  <link rel="apple-touch-icon" href="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
-  <link rel="shortcut icon" href="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
-
-  <!-- Social preview (LinkedIn/Twitter/Facebook) -->
+  <meta name="description" content="One vivid pastel 6×6 Color Sudoku by Airy Fairy Press. Fill each row, column, and 2×3 block with each color once.">
+  <link rel="icon" type="image/png" href="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
   <meta property="og:title" content="Coquette Color Sudoku — 6×6">
-  <meta property="og:description" content="Play a pastel 6×6 Color Sudoku right in your browser.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://jeanmhuang.github.io/ColorSudoku/">
+  <meta property="og:description" content="Play a bright, cheerful 6×6 Color Sudoku right in your browser.">
   <meta property="og:image" content="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://jeanmhuang.github.io/ColorSudoku/thumbnail.jpg">
-  <link rel="canonical" href="https://jeanmhuang.github.io/ColorSudoku/">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#fff9fc;--card:#ffffff;--ink:#2f2f2f;--muted:#8c8c8c;--border:#f1d9e5;--accent:#d97fa4;--ring:#ff8fb3;--invalid:#ff6b6b;--valid:#3fc07a;--C1:#ffb7d5;--C2:#ffd1a6;--C3:#fff477;--C4:#b8f7b8;--C5:#aee0ff;--C6:#d6b8ff;
+      --bg:#fff7fa;--card:#ffffff;--ink:#2a2a2a;--muted:#7a5b6d;--border:#f0b8d1;--accent:#e0618d;--ring:#ff9ebc;--invalid:#ff4e4e;--valid:#4ac37f;
+      --C1:#ff9fc2;--C2:#ffc187;--C3:#ffeb62;--C4:#9ef5a3;--C5:#8dd3ff;--C6:#c5a0ff;
     }
     body{margin:0;background:var(--bg);color:var(--ink);font-family:'Playfair Display',serif;display:flex;justify-content:center;padding:24px}
-    .wrap{width:min(900px,100%);background:var(--card);border:2px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(180,120,150,.18);padding:16px;margin-top:20px}
-    h1{text-align:center;color:var(--accent);font-family:'DM Serif Display',serif}
-    .grid{display:grid;grid-template-columns:repeat(6,1fr);border:2px solid var(--border);border-radius:12px;overflow:hidden;margin-top:10px}
-    .cell{aspect-ratio:1/1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .15s ease;font-family:'Playfair Display',serif;font-size:15px}
+    .wrap{width:min(900px,100%);background:var(--card);border:2px solid var(--border);border-radius:18px;box-shadow:0 12px 40px rgba(228,106,146,.25);padding:20px;margin-top:24px}
+    h1{text-align:center;color:var(--accent);font-family:'DM Serif Display',serif;font-size:2.6em;letter-spacing:0.4px;margin-bottom:0.3em;text-shadow:0 0 8px rgba(255,180,200,.25)}
+    .grid{display:grid;grid-template-columns:repeat(6,1fr);border:2px solid var(--border);border-radius:14px;overflow:hidden;margin-top:10px}
+    .cell{aspect-ratio:1/1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .15s ease,font-size .2s;font-family:'Playfair Display',serif;font-size:15px}
     .cell.err{box-shadow:0 0 0 3px var(--invalid) inset}
-    .controls{display:flex;gap:8px;margin-top:10px;justify-content:center}
-    button{border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer;font-family:'Playfair Display',serif}
-    button:hover{box-shadow:0 8px 20px rgba(180,120,150,.18)}
-    .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-    .swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px;border-radius:8px;cursor:pointer}
+    .controls{display:flex;gap:10px;margin-top:12px;justify-content:center;font-family:'DM Serif Display',serif}
+    button{border:1px solid var(--border);background:#fff;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;font-family:'DM Serif Display',serif;color:#000;transition:all .2s ease}
+    button:hover{box-shadow:0 8px 20px rgba(228,106,146,.25);transform:translateY(-1px)}
+    .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;font-family:'Playfair Display',serif}
+    .swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--border);padding:8px;border-radius:8px;cursor:pointer;font-family:'Playfair Display',serif;background-color:#fff;transition:all .2s ease}
+    .swatch:hover{background-color:rgba(255,230,240,.6)}
     .chip{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
     .active{box-shadow:0 0 0 3px var(--ring) inset}
-  .visitor{margin-top:14px;text-align:center;font-size:15px;color:var(--muted)}
+    .visitor{margin-top:16px;text-align:center;font-size:15px;color:var(--muted);font-family:'Playfair Display',serif}
+    .instructions{text-align:center;font-family:'Playfair Display',serif;font-size:17px;color:#000;margin-top:12px;line-height:1.5em}
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Coquette Color Sudoku (6×6)</h1>
     <div id="grid" class="grid"></div>
+    <p class="instructions">Click a color below, then click squares to fill the grid. Each color can appear only once in every row, column, and 2×3 block.</p>
     <div class="legend" id="legend"></div>
     <div class="controls">
       <button id="btnNew">🧩 New</button>
@@ -58,7 +50,7 @@
   </div>
 
   <script>
-    const COLORS=[null,{key:'R',name:'Rose',css:'var(--C1)'},{key:'O',name:'Peach',css:'var(--C2)'},{key:'Y',name:'Lemon',css:'var(--C3)'},{key:'G',name:'Mint',css:'var(--C4)'},{key:'B',name:'Sky',css:'var(--C5)'},{key:'P',name:'Lilac',css:'var(--C6)'}];
+    const COLORS=[null,{name:'rose',css:'var(--C1)'},{name:'peach',css:'var(--C2)'},{name:'lemon',css:'var(--C3)'},{name:'mint',css:'var(--C4)'},{name:'sky',css:'var(--C5)'},{name:'lilac',css:'var(--C6)'}];
     const gridEl=document.getElementById('grid');
     const legendEl=document.getElementById('legend');
 
@@ -67,10 +59,8 @@
     function shuffle(a){return a.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);}
     function baseSolved(){const N=6,rBase=2,cBase=3;return Array.from({length:N},(_,r)=>Array.from({length:N},(_,c)=>((r*cBase+Math.floor(r/rBase)+c)%N)+1));}
     function randomSolved(){
-      // Start from canonical valid base
       let g = baseSolved();
       const N=6, rBase=2, cBase=3;
-      // Shuffle row bands (0..2), and rows within each band
       const bandOrder = shuffle([0,1,2]);
       const rowsShuffled = [];
       for(const b of bandOrder){
@@ -79,7 +69,6 @@
         for(const r of perm) rowsShuffled.push(g[r]);
       }
       g = rowsShuffled;
-      // Shuffle column stacks (0..1), and columns within each stack
       const stackOrder = shuffle([0,1]);
       const g2 = Array.from({length:N},()=>Array(N).fill(0));
       let destCol = 0;
@@ -92,7 +81,6 @@
         }
       }
       g = g2;
-      // Relabel digits 1..6 randomly
       const map = shuffle([1,2,3,4,5,6]);
       g = g.map(row=>row.map(v=>map[v-1]));
       return g;
@@ -101,14 +89,13 @@
 
     function generatePuzzle(){solution=randomSolved();const mask=makeMask(18+Math.floor(Math.random()*3));startGrid=solution.map((r,ri)=>r.map((v,ci)=>mask[ri][ci]?v:0));current=startGrid.map(r=>r.slice());fixed=startGrid.map(r=>r.map(v=>v!==0));renderBoard();renderLegend();}
 
-    function renderBoard(){gridEl.innerHTML='';for(let r=0;r<6;r++){for(let c=0;c<6;c++){const v=current[r][c];const d=document.createElement('div');d.className='cell';if(fixed[r][c])d.classList.add('fixed');d.style.background=v?COLORS[v].css:'#fff';if(v){const t=document.createElement('div');t.textContent=COLORS[v].key;d.appendChild(t);}d.addEventListener('click',()=>{if(!fixed[r][c]){current[r][c]=activeColor;renderBoard();}});gridEl.appendChild(d);}}}
+    function renderBoard(){gridEl.innerHTML='';for(let r=0;r<6;r++){for(let c=0;c<6;c++){const v=current[r][c];const d=document.createElement('div');d.className='cell';if(fixed[r][c])d.classList.add('fixed');d.style.background=v?COLORS[v].css:'#fff';d.addEventListener('click',()=>{if(!fixed[r][c]){current[r][c]=activeColor;renderBoard();}});gridEl.appendChild(d);}}}
 
     function renderLegend(){legendEl.innerHTML='';for(let i=1;i<=6;i++){const sw=document.createElement('div');sw.className='swatch'+(activeColor===i?' active':'');const chip=document.createElement('div');chip.className='chip';chip.style.background=COLORS[i].css;const label=document.createElement('span');label.textContent=COLORS[i].name;sw.appendChild(chip);sw.appendChild(label);sw.addEventListener('click',()=>{activeColor=i;renderLegend();});legendEl.appendChild(sw);}}
 
     function highlightErrors(){
       const cells=[...gridEl.children];
       cells.forEach(c=>c.classList.remove('err'));
-      // Row & Column duplicates
       for(let i=0;i<6;i++){
         const row=current[i];
         const col=current.map(r=>r[i]);
@@ -122,7 +109,6 @@
         for(const c of markRow) cells[i*6+c].classList.add('err');
         for(const r of markCol) cells[r*6+i].classList.add('err');
       }
-      // 2x3 block duplicates
       for(let br=0;br<3;br++){
         for(let bc=0;bc<2;bc++){
           const idxs=[]; const vals=[];
@@ -148,18 +134,16 @@
 
     function hint(){
       if(!solution || !current || !fixed) return;
-      // collect cells that are either empty or incorrect and not fixed
       const open=[];
       for(let r=0;r<6;r++){
         for(let c=0;c<6;c++){
           if(!fixed[r][c] && current[r][c]!==solution[r][c]) open.push([r,c]);
         }
       }
-      if(open.length===0) return; // nothing to hint
+      if(open.length===0) return;
       const [r,c]=open[Math.floor(Math.random()*open.length)];
       current[r][c]=solution[r][c];
       renderBoard();
-      // briefly highlight the hinted cell
       const cells=[...gridEl.children];
       const idx=r*6+c; const cell=cells[idx];
       cell.style.boxShadow='0 0 0 3px var(--ring) inset';
